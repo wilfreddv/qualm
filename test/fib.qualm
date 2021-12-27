@@ -1,7 +1,9 @@
-v1>0 1 # move `1` into slots 0 and 1 #
-{s1    # swap counter to working slot #
-  <=10 # if it is smaller or equal to 10 #
-  {w+1 # add 1 to counter #
-  s1!' ! # swap counter n accumulator, and print the accum and a space #
-  w+<0s0 # add s0 to accumulator, swap w back to s0 #
+v1>0>1
+{
+    s1<=10
+{
+    !v' :!
+    <1
+    +<0
+    >0
 }

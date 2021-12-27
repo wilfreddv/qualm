@@ -20,7 +20,7 @@ $               indexing
 <number>/<number> div
 <number>%<number> mod
 <number>=<number> equals
-<expr>=!<expr>    neq
+<expr>!=<expr>    neq
 <expr><=<expr>    smaller
 <expr>>=<expr>    bigger
 

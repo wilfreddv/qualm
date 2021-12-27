@@ -14,27 +14,17 @@ def print_usage():
 whitespace = " \t\n"
 
 
-_has_errored = False
-def error(msg, stderr):
-    stderr.write(msg + '\n')
-    
-    global _has_errored
-    _has_errored = True
-
-    if __name__ == '__main__':
-        sys.exit(-1)
-
 
 def debug(interpreter):
     command = input("> ")
 
     if command == "help":
-        print("current stack code loops run help", )
+        print("current stack code loops run help quit", )
     elif command == "current":
         print(interpreter.ch())
     elif command == "stack":
         print(f"working: {interpreter.w}")
-        v = [str(kv[0]) for kv in sorted(interpreter.slots.items(), key=lambda kv: kv[0])]
+        v = [str(kv[1]) for kv in sorted(interpreter.slots.items(), key=lambda kv: kv[0])]
         print(" | ".join(v))
     elif command == "code":
         print(interpreter.code)
@@ -46,6 +36,8 @@ def debug(interpreter):
         global DEBUG
         DEBUG = False
         return
+    elif command == "quit":
+        sys.exit()
     else:
         return
     
@@ -65,70 +57,119 @@ class Qualm:
 
         self.loops = []
 
+        self._has_errored = False
+
+        self.operators = {
+            "!": self.print,
+            ",": self.readf,
+            ".": self.read,
+            "s": self.swap,
+            ">": self.push,
+            "<": self.pull,
+            "v": self.data,
+            "{": self.loop_open,
+            "}": self.loop_close,
+            "+": self.plus,
+            "-": self.minus,
+        }
+
+
+    def print(self):
+        output = self.w
+
+        if self.peek() == "i":
+            self.eat()
+            output = int(output)
+
+        self.stdout.write(str(output))
+
+    def readf(self):
+        self.error("Reading from file is not implemented yet!", self.stderr)
+    
+    def read(self):
+        self.error("Reading from stdin is not implemented yet!", self.stderr)
+
+    def swap(self):
+        slot = self.slot()
+        self.w, self.slots[slot] = self.slots[slot], self.w
+
+    def push(self):
+        slot = self.slot()
+        self.slots[slot] = self.w
+
+    def pull(self):
+        slot = self.slot()
+        self.w = self.slots[slot]
+
+    def data(self):
+        if self.peek() == "'":
+            self.position += 1 # Skip '
+            value = self.string()
+        else:
+            value = self.number()
+        self.w = value
+
+    def loop_open(self):
+        if len(self.loops) and (not self.loops[-1][1] or self.loops[-1][1] == self.position):
+            # If encounter a { in a loop, and the position is 0,
+            # it must be the body (otherwise the position would be set)
+            self.loops[-1][1] = self.position
+            return # And we go on
+        elif len(self.loops) == 0:
+            # New loop
+            self.loops.append([self.position, 0, 0])
+        
+        if not self.condition():
+            # Skip body and delete dey loopey
+            if self.loops[-1][1] == 0:
+                # Find closing
+                while self.eat() != "}": pass
+            else:
+                self.position = self.loops[-1][2]
+            self.loops = self.loops[:-1]
+
+    def loop_close(self):
+        if len(self.loops) == 0:
+            self.error("Not in a loop.")
+        
+        self.loops[-1][2] = self.position
+        self.position = self.loops[-1][0]-1
+
+    
+    def plus(self):
+        if self.peek() == "'":
+            self.position += 1 # Skip '
+            val = self.string()
+        elif self.peek() == "<":
+            self.position += 1
+            val = self.slots[self.slot()]
+        else:
+            val = self.number()
+        
+        self.w += val
+
+
+    def minus(self):
+        val = self.number()
+        self.w -= val
+
 
     def run(self):
-        global _has_errored
-        _has_errored = False
+        self._has_errored = False
 
         while self.position < len(self.code):
-            if _has_errored:
+            if self._has_errored:
                 break
-
             
             ch = self.ch()
 
             if DEBUG:
                 debug(self)
 
-            if ch == "!":
-                self.stdout.write(str(self.w))
-            elif ch == ",":
-                error("Reading from file is not implemented yet!", self.stderr)
-            elif ch == ".":
-                error("Reading from stdin is not implemented yet!", self.stderr)
-            elif ch == "s":
-                slot = self.slot()
-                self.w, self.slots[slot] = self.slots[slot], self.w
-            elif ch == ">":
-                slot = self.slot()
-                self.slots[slot] = self.w
-            elif ch == "<":
-                slot = self.slot()
-                self.w = self.slots[slot]
-            elif ch == "v":
-                if self.peek() == "'":
-                    self.position += 1 # Skip '
-                    value = self.string()
-                else:
-                    value = self.number()
-                self.w = value
-            elif ch == "{":
-                if len(self.loops) and not self.loops[-1][1]:
-                    # If encounter a { in a loop, and the position is 0,
-                    # it must be the body (otherwise the position would be set)
-                    self.loops[-1][1] = self.position
-                elif len(self.loops) == 0:
-                    # New loop
-                    self.loops.append((self.position, 0, 0))
-
-                assert(self.loops[-1][0] == self.position)
-                
-                if not self.condition():
-                    # Skip body and delete dey loopey
-                    if self.loops[-1][1] == 0:
-                        # Find closing
-                        while self.eat() != "}": pass
-                    else:
-                        self.position = self.loops[-1][2]
-                    self.loops = self.loops[:-1]
-
-            elif ch == "}":
-                if len(self.loops) == 0:
-                    error("Not in a loop.")
-                
-                self.position = self.loops[-1][0]
-            else:
-                error(f"Got unexpected `{ch}` at {self.position}.", self.stderr)
+            try:
+                self.operators[ch]()
+            except KeyError:
+                self.error(f"Got unexpected `{ch}` at {self.position}.", self.stderr)
 
             self.position += 1
 
@@ -141,7 +182,8 @@ class Qualm:
 
     def eat(self):
         if self.position + 1 >= len(self.code):
-            error("EOF", self.stderr)
+            self.error("EOF", self.stderr)
+            return EOF
         self.position += 1
         return self.ch()
 
@@ -150,12 +192,51 @@ class Qualm:
         """
         <expr> <op> <expr>
         """
-        return False
+        
+        ch = self.peek()
+        if ch in ".,ws<v":
+            self.position += 1
+            self.operators[ch]()
+            left = self.w
+        elif self.peek() == "'":
+            self.position += 1 # Skip '
+            left = self.string()
+        else:
+            left = self.number()
+            
+
+        op = self.eat()
+        if op == "=":
+            pass
+        else:
+            if self.eat() != "=":
+                self.error(f"Expected `=`, got {self.code[self.position-1]}", self.stderr)
+            op += "="
+
+
+        ch = self.peek()
+        if ch in ".,ws<v":
+            self.position += 1
+            self.operators[ch]()
+            right = self.w
+        elif self.peek() == "'":
+            self.position += 1 # Skip '
+            right = self.string()
+        else:
+            right = self.number()
+
+
+        return {
+            "=": left == right,
+            "!=": left != right,
+            "<=": left <= right,
+            ">=": left >= right,
+        }[op]
 
 
     def slot(self):
         if not self.peek() in "0123456789":
-            error(f"Expected slot (number 0-9), got `{self.peek()}`.", self.stderr)
+            self.error(f"Expected slot (number 0-9), got `{self.peek()}`.", self.stderr)
         r = int(self.peek())
         self.position += 1
         return r
@@ -203,13 +284,15 @@ class Qualm:
         has_decimal = False
         current = self.eat()
 
+        if current is EOF: return 0
+
         if current in "01234567890-":
             n += current
         elif current == ".":
             n += current
             has_decimal = True
         else:
-            error(f"Got `{current}`, expected numeric.", self.stderr)
+            self.error(f"Got `{current}`, expected numeric.", self.stderr)
             return -1
 
         while 1:
@@ -217,7 +300,7 @@ class Qualm:
 
             if next == ".":
                 if has_decimal:
-                    error("Cannot have multiple decimal points.", self.stderr)
+                    self.error("Cannot have multiple decimal points.", self.stderr)
                     return -1
                 has_decimal = True
             elif not next in "0123456789":
@@ -227,6 +310,14 @@ class Qualm:
 
         return float(n)
 
+
+    def error(self, msg, stderr):
+        stderr.write(msg + '\n')
+        
+        self._has_errored = True
+
+        if __name__ == '__main__':
+            sys.exit(-1)
 
 
 def main(filename: str):

@@ -1,3 +1,4 @@
+from os import strerror
 import sys, qualm
 from textwrap import dedent
 
@@ -13,10 +14,10 @@ test_cases = [
         ("v.2!", "0.2"),
         ("v-2!", "-2.0"),
         ("v2!", "2.0"),
-        ("v2-", "Got unexpected `-` at 2.\n"),
-        ("v2>0>1!s9!s0!"),
+        ("v2-", "EOF\n"),
+        # ("v2>0>1!s9!s0!"),
         # Fibonacci
-        ("v1>0>1{s1=7{s1+1s1!v' !w+<0s0}", "1 1 2 3 5 8 13"),
+        ("v2>0v1>1{s1<=15{!iv' :!<1+<0s0}", "1 1 2 3 5 8 13 "),
 ]
 
 
