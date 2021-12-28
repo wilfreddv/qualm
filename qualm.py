@@ -61,7 +61,6 @@ class Qualm:
 
         self.operators = {
             "!": self.print,
-            ",": self.readf,
             ".": self.read,
             "s": self.swap,
             ">": self.push,
@@ -82,9 +81,6 @@ class Qualm:
             output = int(output)
 
         self.stdout.write(str(output))
-
-    def readf(self):
-        self.error("Reading from file is not implemented yet!", self.stderr)
     
     def read(self):
         self.error("Reading from stdin is not implemented yet!", self.stderr)
