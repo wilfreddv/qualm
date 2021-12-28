@@ -1,6 +1,14 @@
+# Qualm
+
+Qualm is an esolang, which uses a stack based memory model. 
+
+```
+Data operations:
 |<delimiter>    split string on delimiter
+i               turn into integer
+c               turn into character (chr())
+
 .               read from STDIN
-,<filename>     read from file
 !               write to STDOUT
 w               working cell
 s<number>       swap <number> var with w
@@ -8,11 +16,11 @@ s<number>       swap <number> var with w
 <<number>       pop <number> to w
 <operation>><number> write output of previous operation to <number>
 <number> can also be `w`, like sw
-v<data>:        put data in w
+v<data>         put data in w
 @               index of, e.g.: "'apples pears bananas:@'apples
 $               indexing
 "...            array, space separated
-'...            stringular data
+'...:           stringular data
 {<condition>{...} loop
 <number>+<number> add
 <number>-<number> sub
@@ -23,31 +31,19 @@ $               indexing
 <expr>!=<expr>    neq
 <expr><=<expr>    smaller
 <expr>>=<expr>    bigger
+```
 
 
-maximum of 10 slots (0-9)
-
-
-
+## Examples
+#### Hello world
+```
 Hello world:
 v'Hello World!:!
 
 v write into working cell
 ' denotes stringular data
 ! prints
+```
 
-
-v"'0 one two three four five six seven eight nine ten:>0.|,>1<0@<1$0>2
-v"'   #write into working, array of strings
-0 one two three four five six seven eight nine ten/
->0      # move it to cell 0
-.|,>1   # read from stdin, split on ,, move to cell 1
-<0      # move cell 0 into w
-@       # get the index
-<1      # of cell 1
-$0      # 's 0th element
->2      # and store it into cell 2
-
-
-Fibonacci:      v implied w
-v1>0>1{s1=10{s1+1s1!v' !w+<0s0}
+#### Fibonacci sequence
+`v2>0v1>1{s1<=23416728348467685{!iv' :!<1+<0s0}`
