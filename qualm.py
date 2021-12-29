@@ -71,6 +71,7 @@ class Qualm:
             "}": self.loop_close,
             "+": self.plus,
             "-": self.minus,
+            "w": self.get_w,
             "i": self.asint,
         }
 
@@ -152,6 +153,10 @@ class Qualm:
         self.w -= val
 
     
+    def get_w(self):
+        return self.w
+
+
     def asint(self):
         self.w = int(self.w)
 
@@ -168,10 +173,12 @@ class Qualm:
             if DEBUG:
                 debug(self)
 
-            try:
-                self.operators[ch]()
-            except KeyError:
+            
+            if not ch in self.operators:
                 self.error(f"Got unexpected `{ch}` at {self.position}.", self.stderr)
+                continue
+            self.operators[ch]()
+            
 
             self.position += 1
 
