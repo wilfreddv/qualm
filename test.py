@@ -22,10 +22,7 @@ class Input:
         self.data = data
 
     def readline(self):
-        return self.data
-
-    def read(self):
-        return self.readline()
+        return self.data + "\n"
 
 
 test_cases = [
@@ -45,6 +42,8 @@ test_cases = [
         (".!", "Hello world!", Input("Hello world!")),
         (".!", "Hello\nworld!", Input("Hello\nworld!")),
         (".>0v123s0!s0!i", "Hello world!123", Input("Hello world!")),
+        ("v1.2i!", "1"),
+        (".i+3.9!i", "5", Input("2")),
 ]
 
 

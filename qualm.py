@@ -71,6 +71,7 @@ class Qualm:
             "}": self.loop_close,
             "+": self.plus,
             "-": self.minus,
+            "i": self.asint,
         }
 
 
@@ -84,7 +85,7 @@ class Qualm:
         self.stdout.write(str(output))
     
     def read(self):
-        self.w = self.stdin.read()
+        self.w = self.stdin.readline().strip("\n")
 
     def swap(self):
         slot = self.slot()
@@ -149,6 +150,10 @@ class Qualm:
     def minus(self):
         val = self.number()
         self.w -= val
+
+    
+    def asint(self):
+        self.w = int(self.w)
 
 
     def run(self):
