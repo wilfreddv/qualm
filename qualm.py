@@ -305,7 +305,7 @@ class Qualm:
                     self.error("Cannot have multiple decimal points.", self.stderr)
                     return -1
                 has_decimal = True
-            elif not next in "0123456789":
+            elif not str(next) in "0123456789":
                 break
 
             n += self.eat()
