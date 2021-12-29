@@ -3,6 +3,30 @@ import sys, qualm
 from textwrap import dedent
 
 
+class Output:
+    def __init__(self):
+        self.data = ""
+
+    def write(self, s):
+        self.data += s
+
+    def __str__(self):
+        return self.data
+
+    def __eq__(self, obj):
+        return str(self) == str(obj)
+
+
+class Input:
+    def __init__(self, data):
+        self.data = data
+
+    def readline(self):
+        return self.data
+
+    def read(self):
+        return self.readline()
+
 
 test_cases = [
         ("v'Hello World!:!", "Hello World!"),
@@ -18,22 +42,10 @@ test_cases = [
         # ("v2>0>1!s9!s0!"),
         # Fibonacci
         ("v2>0v1>1{s1<=15{!iv' :!<1+<0s0}", "1 1 2 3 5 8 13 "),
+        (".!", "Hello world!", Input("Hello world!")),
+        (".!", "Hello\nworld!", Input("Hello\nworld!")),
+        (".>0v123s0!s0!i", "Hello world!123", Input("Hello world!")),
 ]
-
-
-class Output:
-    def __init__(self):
-        self.data = ""
-
-    def write(self, s):
-        self.data += s
-
-    def __str__(self):
-        return self.data
-
-    def __eq__(self, obj):
-        return str(self) == str(obj)
-
 
 
 def test(code, expected_output, stdin=sys.stdin):

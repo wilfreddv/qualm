@@ -47,6 +47,7 @@ def debug(interpreter):
 class Qualm:
     def __init__(self, code, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         self.code = code
+        self.stdin = stdin
         self.stdout = stdout
         self.stderr = stderr
         self.position = 0
@@ -83,7 +84,7 @@ class Qualm:
         self.stdout.write(str(output))
     
     def read(self):
-        self.error("Reading from stdin is not implemented yet!", self.stderr)
+        self.w = self.stdin.read()
 
     def swap(self):
         slot = self.slot()
