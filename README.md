@@ -4,9 +4,9 @@ Qualm is an esolang, which uses a stack based memory model.
 
 ```
 Data operations:
-|<delimiter>    split string on delimiter
+|<delimiter>    split string on delimiter   # UNIMPLEMENTED
 i               turn into integer
-c               turn into character (chr())
+c               turn into character (chr()) # UNIMPLEMENTED
 
 .               read from STDIN
 !               write to STDOUT
@@ -15,18 +15,18 @@ s<number>       swap <number> var with w
 ><number>       push w to <number>
 <<number>       pop <number> to w
 <operation>><number> write output of previous operation to <number>
-<number> can also be `w`, like sw
+<number> can also be `w`, like sw (Using `w` is unimplemented)
 v<data>         put data in w
-@               index of, e.g.: "'apples pears bananas:@'apples
-$               indexing
-"...            array, space separated
+@               index of, e.g.: "'apples pears bananas:@'apples # UNIMPLEMENTED
+$               indexing # UNIMPLEMENTED
+"...            array, space separated # UNIMPLEMENTED
 '...:           stringular data
 {<condition>{...} loop
 <number>+<number> add
 <number>-<number> sub
-<number>*<number> mul
-<number>/<number> div
-<number>%<number> mod
+<number>*<number> mul   # UNIMPLEMENTED
+<number>/<number> div   # UNIMPLEMENTED
+<number>%<number> mod   # UNIMPLEMENTED
 <number>=<number> equals
 <expr>!=<expr>    neq
 <expr><=<expr>    smaller
