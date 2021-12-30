@@ -24,9 +24,9 @@ $               indexing # UNIMPLEMENTED
 {<condition>{...} loop
 <number>+<number> add
 <number>-<number> sub
-<number>*<number> mul   # UNIMPLEMENTED
-<number>/<number> div   # UNIMPLEMENTED
-<number>%<number> mod   # UNIMPLEMENTED
+<number>*<number> mul
+<number>/<number> div
+<number>%<number> mod
 <number>=<number> equals
 <expr>!=<expr>    neq
 <expr><=<expr>    smaller

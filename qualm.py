@@ -71,6 +71,9 @@ class Qualm:
             "}": self.loop_close,
             "+": self.plus,
             "-": self.minus,
+            "*": self.mul,
+            "/": self.div,
+            "%": self.mod,
             "w": self.get_w,
             "i": self.asint,
         }
@@ -151,6 +154,21 @@ class Qualm:
     def minus(self):
         val = self.number()
         self.w -= val
+
+
+    def mul(self):
+        val = self.number()
+        self.w *= val
+
+    
+    def div(self):
+        val = self.number()
+        self.w /= val
+
+
+    def mod(self):
+        val = self.number()
+        self.w %= val
 
     
     def get_w(self):
@@ -294,6 +312,9 @@ class Qualm:
         current = self.eat()
 
         if current is EOF: return 0
+
+        if current == "w":
+            return self.w
 
         if current in "01234567890-":
             n += current
