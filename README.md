@@ -4,13 +4,13 @@ Qualm is an esolang, which uses a stack based memory model.
 
 
 ## Installation
-You can install Qualm via pip: `python3 -m pip install -U qualm`
+You can install Qualm from PyPi: `python3 -m pip install -U qualm`
 
 Or clone the repository:
 ```
 $ git clone https://github.com/wilfreddv/qualm.git
 $ cd qualm
-$ python3 setup.py install .
+$ python3 -m pip install -U .
 ```
 
 ## Documentation
