@@ -78,6 +78,7 @@ class Qualm:
             "i": self.asint,
             "c": self.aschr,
             "o": self.asord,
+            "|": self.split,
         }
 
 
@@ -194,6 +195,11 @@ class Qualm:
 
     def asord(self):
         self.w = ord(self.w)
+
+    
+    def split(self):
+        delim = self.eat()
+        self.w = self.w.split(delim)
 
 
     def run(self):

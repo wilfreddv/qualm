@@ -45,6 +45,7 @@ test_cases = [
         (".i+3.9!i", "5", Input("2")),
         ("v1s0<w!i", "1"),
         ("v'A:!oo!!cc!", f"{ord('A')}{ord('A')}AA"),
+        ("v'hello world:| !", "['hello', 'world']"),
 ]
 
 
