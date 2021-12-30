@@ -199,7 +199,17 @@ class Qualm:
     
     def split(self):
         delim = self.eat()
-        self.w = self.w.split(delim)
+
+        if delim == "\\":
+            next = self.eat()
+            if next == "n": delim = "\n"
+            elif next == "t": delim = "\t"
+            elif next == "\\": delim = "\\"
+            else:
+                self.error("Bad escape character for delimiter", self.stderr)
+        
+        if delim in self.w: # Don't split if there's no delimiter
+            self.w = self.w.split(delim)
 
 
     def run(self):
