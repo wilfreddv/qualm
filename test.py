@@ -44,6 +44,7 @@ test_cases = [
         (".>0v123s0!s0!i", "Hello world!123", Input("Hello world!")),
         ("v1.2i!", "1"),
         (".i+3.9!i", "5", Input("2")),
+        ("v1s0<w!i", "1")
 ]
 
 
