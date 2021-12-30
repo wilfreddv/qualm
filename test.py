@@ -36,7 +36,6 @@ test_cases = [
         ("v-2!", "-2.0"),
         ("v2!", "2.0"),
         ("v2-", "EOF\n"),
-        # ("v2>0>1!s9!s0!"),
         # Fibonacci
         ("v2>0v1>1{s1<=15{!iv' :!<1+<0s0}", "1 1 2 3 5 8 13 "),
         (".!", "Hello world!", Input("Hello world!")),
@@ -44,7 +43,8 @@ test_cases = [
         (".>0v123s0!s0!i", "Hello world!123", Input("Hello world!")),
         ("v1.2i!", "1"),
         (".i+3.9!i", "5", Input("2")),
-        ("v1s0<w!i", "1")
+        ("v1s0<w!i", "1"),
+        ("v'A:!oo!!cc!", f"{ord('A')}{ord('A')}AA"),
 ]
 
 

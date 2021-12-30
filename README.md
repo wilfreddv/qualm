@@ -4,9 +4,10 @@ Qualm is an esolang, which uses a stack based memory model.
 
 ```
 Data operations:
-|<delimiter>    split string on delimiter   # UNIMPLEMENTED
+|<delimiter>    split string on delimiter
 i               turn into integer
-c               turn into character (chr()) # UNIMPLEMENTED
+c               turn into character (chr())
+o               turn into ascii value (ord())
 
 .               read from STDIN
 !               write to STDOUT

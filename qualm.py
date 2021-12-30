@@ -76,15 +76,24 @@ class Qualm:
             "%": self.mod,
             "w": self.get_w,
             "i": self.asint,
+            "c": self.aschr,
+            "o": self.asord,
         }
 
 
     def print(self):
         output = self.w
 
-        if self.peek() == "i":
+        next = self.peek()
+        if next == "i":
             self.eat()
             output = int(output)
+        elif next == "c":
+            self.eat()
+            output = chr(output)
+        elif next == "o":
+            self.eat()
+            output = ord(output)
 
         self.stdout.write(str(output))
     
@@ -177,6 +186,14 @@ class Qualm:
 
     def asint(self):
         self.w = int(self.w)
+
+    
+    def aschr(self):
+        self.w = chr(self.w)
+
+
+    def asord(self):
+        self.w = ord(self.w)
 
 
     def run(self):
