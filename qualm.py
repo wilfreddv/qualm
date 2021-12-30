@@ -7,12 +7,10 @@ DEBUG = False
 class EOF: ...
 
 def print_usage():
-    print(f"{sys.argv[0]} [file | -c prog] [-d]")
-
+    print(f"Usage: {sys.argv[0].split('/')[-1]} [file | -c prog] [-d]")
 
 
 whitespace = " \t\n"
-
 
 
 def debug(interpreter):
@@ -414,20 +412,9 @@ class Qualm:
             sys.exit(-1)
 
 
-def main(filename: str):
-    try:
-        with open(filename, 'r') as f:
-            source = f.read()
-    except OSError as e:
-        print(e.strerror)
-        return 1
+def main():
+    global DEBUG
 
-    Qualm(source).run()
-
-    return 0
-
-
-if __name__=='__main__':
     DEBUG = "-d" in sys.argv
     if DEBUG: sys.argv.remove("-d")
 
@@ -440,6 +427,18 @@ if __name__=='__main__':
     if "-c" in sys.argv:
         code = sys.argv[sys.argv.index("-c") + 1]
         Qualm(code).run()
-        print()
     else:
-        sys.exit(main(sys.argv[1]))
+        try:
+            with open(sys.argv[1], 'r') as f:
+                source = f.read()
+        except OSError as e:
+            print(e.strerror)
+            return 1
+    
+        Qualm(source).run()
+
+    return 0
+
+
+if __name__=='__main__':
+    sys.exit(main())
