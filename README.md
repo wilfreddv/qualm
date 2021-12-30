@@ -5,6 +5,8 @@ Qualm is an esolang, which uses a stack based memory model.
 ```
 Data operations:
 |<delimiter>    split string on delimiter
+@               index of, e.g.: "'apples pears bananas:@'apples
+$               indexing
 i               turn into integer
 c               turn into character (chr())
 o               turn into ascii value (ord())
@@ -18,8 +20,6 @@ s<number>       swap <number> var with w
 <operation>><number> write output of previous operation to <number>
 <number> can also be `w`, like sw (Using `w` is unimplemented)
 v<data>         put data in w
-@               index of, e.g.: "'apples pears bananas:@'apples # UNIMPLEMENTED
-$               indexing # UNIMPLEMENTED
 "...            array, space separated # UNIMPLEMENTED
 '...:           stringular data
 {<condition>{...} loop

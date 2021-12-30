@@ -79,6 +79,8 @@ class Qualm:
             "c": self.aschr,
             "o": self.asord,
             "|": self.split,
+            "@": self.indexof,
+            "$": self.getat,
         }
 
 
@@ -210,6 +212,31 @@ class Qualm:
         
         if delim in self.w: # Don't split if there's no delimiter
             self.w = self.w.split(delim)
+
+
+    def indexof(self):
+        if self.peek() == "'":
+            self.eat()
+            item = self.string()
+        elif self.peek() in "0123456789":
+            item = self.number()
+        elif self.peek() == "<":
+            self.eat()
+            item = self.slots[self.slot()]
+        else:
+            self.error(f"Invalid item to get index of at position {self.position}.", self.stderr)
+
+        self.w = self.w.index(item)
+
+
+    def getat(self):
+        if self.peek() == "<":
+            self.eat()
+            at = int(self.slots[self.slot()])
+        else:
+            at = int(self.number())
+        
+        self.w = self.w[at]
 
 
     def run(self):

@@ -46,6 +46,7 @@ test_cases = [
         ("v1s0<w!i", "1"),
         ("v'A:!oo!!cc!", f"{ord('A')}{ord('A')}AA"),
         ("v'hello world:| !", "['hello', 'world']"),
+        ("v'hello world:| >0$1!<0$-1!v0s0$<0!", "worldworldhello")
 ]
 
 
