@@ -18,7 +18,7 @@ s<number>       swap <number> var with w
 ><number>       push w to <number>
 <<number>       pop <number> to w
 <operation>><number> write output of previous operation to <number>
-<number> can also be `w`, like sw (Using `w` is unimplemented)
+<number> can also be `w`, like sw
 v<data>         put data in w
 "...            array, space separated # UNIMPLEMENTED
 '...:           stringular data
