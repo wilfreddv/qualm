@@ -32,8 +32,7 @@ s<number>       swap <number> var with w
 <operation>><number> write output of previous operation to <number>
 <number> can also be `w`, like sw
 v<data>         put data in w
-"...            array, space separated # UNIMPLEMENTED
-'...:           stringular data
+'...:           string data
 {<condition>{...} loop
 <number>+<number> add
 <number>-<number> sub
@@ -54,7 +53,7 @@ Hello world:
 v'Hello World!:!
 
 v write into working cell
-' denotes stringular data
+' denotes string data
 ! prints
 ```
 
