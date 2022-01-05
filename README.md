@@ -1,6 +1,6 @@
 # Qualm
 
-Qualm is an esolang, which uses a stack based memory model. 
+Qualm is an esolang, which uses a cell-based memory model. 
 
 
 ## Installation
