@@ -129,18 +129,18 @@ class Qualm:
             # it must be the body (otherwise the position would be set)
             self.loops[-1][1] = self.position
             return # And we go on
-        elif len(self.loops) == 0:
+        else:
             # New loop
             self.loops.append([self.position, 0, 0])
         
-        if not self.condition():
-            # Skip body and delete dey loopey
-            if self.loops[-1][1] == 0:
-                # Find closing
-                while self.eat() != "}": pass
-            else:
-                self.position = self.loops[-1][2]
-            self.loops = self.loops[:-1]
+            if not self.condition():
+                # Skip body and delete dey loopey
+                if self.loops[-1][1] == 0:
+                    # Find closing
+                    while self.eat() != "}": pass
+                else:
+                    self.position = self.loops[-1][2]
+                self.loops = self.loops[:-1]
 
     def loop_close(self):
         if len(self.loops) == 0:
@@ -260,7 +260,7 @@ class Qualm:
             else:
                 self.error(f"Got unexpected `{ch}` at {self.position}.", self.stderr)
                 break
-            
+
 
             self.position += 1
 
