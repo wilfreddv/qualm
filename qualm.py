@@ -5,6 +5,7 @@ from collections import defaultdict
 
 
 DEBUG = False
+DEBUG_STEPS_LEFT = 0
 
 class EOF: ...
 
@@ -16,10 +17,11 @@ whitespace = " \t\n"
 
 
 def debug(interpreter):
-    command = input("> ")
+    command, *args = input("> ").split()
 
     if command == "help":
-        print("current stack code loops run help quit", )
+        print("current stack code step\n" \
+              "loops run help quit")
     elif command == "current":
         print(interpreter.ch())
     elif command == "stack":
@@ -29,6 +31,16 @@ def debug(interpreter):
     elif command == "code":
         print(interpreter.code)
         print(" " * interpreter.position, end="^\n")
+    elif command == "step":
+        try:
+            steps = int(args[0])
+        except (ValueError, IndexError):
+            print(f"Invalid number...")
+            debug(interpreter)
+            return
+        global DEBUG_STEPS_LEFT
+        DEBUG_STEPS_LEFT = steps
+        return
     elif command == "loops":
         for loop in interpreter.loops:
             print(loop)
@@ -249,8 +261,11 @@ class Qualm:
             ch = self.ch()
 
             if DEBUG:
-                debug(self)
-
+                global DEBUG_STEPS_LEFT
+                if DEBUG_STEPS_LEFT == 0:
+                    debug(self)
+                else:
+                    DEBUG_STEPS_LEFT -= 1
             
             if ch in self.operators:
                 self.operators[ch]()
