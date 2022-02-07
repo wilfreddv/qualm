@@ -17,7 +17,7 @@ whitespace = " \t\n"
 
 
 def debug(interpreter):
-    command, *args = input("> ").split()
+    command, *args = input("> ").split() or [""]
 
     if command == "help":
         print("current stack code step\n" \
