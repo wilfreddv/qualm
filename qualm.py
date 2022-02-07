@@ -327,12 +327,13 @@ class Qualm:
 
     def slot(self):
         ch = self.eat()
-
+        
         if ch == "w":
             ch = str(self.w)
 
         if not ch in "0123456789":
-            self.error(f"Expected slot (number 0-9), got `{self.peek()}`.", self.stderr)
+            self.error(f"Expected slot (number 0-9), got `{ch}`.", self.stderr)
+            return -1
 
         return int(ch)
 
