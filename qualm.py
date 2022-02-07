@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 from collections import defaultdict
 
@@ -250,10 +252,14 @@ class Qualm:
                 debug(self)
 
             
-            if not ch in self.operators:
+            if ch in self.operators:
+                self.operators[ch]()
+            elif ch in whitespace:
+                # Ignore whitespace
+                pass
+            else:
                 self.error(f"Got unexpected `{ch}` at {self.position}.", self.stderr)
-                continue
-            self.operators[ch]()
+                break
             
 
             self.position += 1
