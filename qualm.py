@@ -157,7 +157,19 @@ class Qualm:
             # Skip body and delete dey loopey
             if self.loops[-1][1] == 0:
                 # Find closing
-                while self.eat() != "}": pass
+                # FIXME: doesn't work for braces in a string
+                while self.eat() != "{": pass # Parse until body
+
+                depth = 1
+                while ch := self.eat():
+                    if ch == '{':
+                        depth += 1
+                        while self.eat() != "{": pass # Parse until body
+                    elif ch == '}':
+                        depth -= 1
+                    
+                    if depth == 0: # Reached end of loop body
+                        break
             else:
                 self.position = self.loops[-1][2]
             self.loops = self.loops[:-1]
