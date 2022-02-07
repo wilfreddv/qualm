@@ -136,23 +136,31 @@ class Qualm:
         self.w = value
 
     def loop_open(self):
-        if len(self.loops) and (not self.loops[-1][1] or self.loops[-1][1] == self.position):
+        if len(self.loops) and (self.loops[-1][1] == 0 or self.loops[-1][1] == self.position):
             # If encounter a { in a loop, and the position is 0,
             # it must be the body (otherwise the position would be set)
+            
             self.loops[-1][1] = self.position
+            if DEBUG:
+                print(f"Found loop body: {self.loops[-1]}")
+
             return # And we go on
-        else:
-            # New loop
+        elif len(self.loops) == 0 or self.loops[-1][0] != self.position:
+            # If the position isn't the start of the loop,
+            # it must be a new one
             self.loops.append([self.position, 0, 0])
+
+            if DEBUG:
+                print(f"Found new loop: {self.loops[-1]}")
         
-            if not self.condition():
-                # Skip body and delete dey loopey
-                if self.loops[-1][1] == 0:
-                    # Find closing
-                    while self.eat() != "}": pass
-                else:
-                    self.position = self.loops[-1][2]
-                self.loops = self.loops[:-1]
+        if not self.condition():
+            # Skip body and delete dey loopey
+            if self.loops[-1][1] == 0:
+                # Find closing
+                while self.eat() != "}": pass
+            else:
+                self.position = self.loops[-1][2]
+            self.loops = self.loops[:-1]
 
     def loop_close(self):
         if len(self.loops) == 0:
