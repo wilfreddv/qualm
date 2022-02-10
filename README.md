@@ -23,8 +23,11 @@ i               turn into integer
 c               turn into character (chr())
 o               turn into ascii value (ord())
 
+&               open file
 .               read from STDIN
+.&[<]<slot>     read from file handle
 !               write to STDOUT
+!&<slot>        write to file handle
 w               working cell
 s<number>       swap <number> var with w
 ><number>       push w to <number>
@@ -45,6 +48,14 @@ v<data>         put data in w
 <expr>>=<expr>    bigger
 ```
 
+
+## Opening a file
+When the `&` instruction is issued, Qualm will open a file with the following parameters:
+
+    * `w`: filename
+    * `0`: the mode (0, 1, 2, 3 for r, w, r+, a respectively)
+
+A file handle will be returned to `w`. This can be used for reading and writing.
 
 ## Examples
 #### Hello world

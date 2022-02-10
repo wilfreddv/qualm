@@ -93,6 +93,7 @@ class Qualm:
             "|": self.split,
             "@": self.indexof,
             "$": self.getat,
+            "&": self.open_file,
         }
 
 
@@ -109,11 +110,37 @@ class Qualm:
         elif next == "o":
             self.eat()
             output = ord(output)
+        
+        # Change file descriptor, standard is stdout
+        if self.peek() == "&":
+            self.eat()
 
-        self.stdout.write(str(output))
+            file_handle = self.slots[self.slot()]
+            
+            try:
+                file_handle.write("".join(output))
+                file_handle.flush()
+            except AttributeError:
+                self.error("Cannot write to non-file handle.", sys.stderr)
+        else:
+            self.stdout.write(str(output))
     
     def read(self):
-        self.w = self.stdin.readline().strip("\n")
+        if self.peek() == "&":
+            self.eat()
+
+            if self.peek() == "<":
+                self.eat()
+                file_handle = self.slots[self.slot()]
+            else:
+                file_handle = self.w
+
+            try:
+                self.w = file_handle.read()
+            except AttributeError:
+                self.error("Cannot read from non-file handle.", sys.stderr)
+        else:
+            self.w = self.stdin.readline().strip("\n")
 
     def swap(self):
         slot = self.slot()
@@ -269,6 +296,17 @@ class Qualm:
             at = int(self.number())
         
         self.w = self.w[at]
+
+    
+    def open_file(self):
+        try:
+            filename = self.w
+            mode = ["r", "w", "r+", "a"][int(self.slots[0])]
+            self.w = open(filename, mode)
+        except FileNotFoundError:
+            self.error(f"File `{filename}` does not exist.", sys.stderr)
+        except (TypeError, IndexError):
+            self.error(f"Invalid mode: {self.slots[0]}", sys.stderr)
 
 
     def run(self):
