@@ -1,4 +1,3 @@
-from os import strerror
 import sys, qualm
 from textwrap import dedent
 
@@ -58,7 +57,7 @@ test_cases = [
 def test(code, expected_output, stdin=sys.stdin):
     output = Output()
     qualm.Qualm(code, stdin=stdin, stdout=output, stderr=output).run()
-    
+
     if output != expected_output:
         print(dedent(f"""
         Input:    {code}
@@ -66,11 +65,11 @@ def test(code, expected_output, stdin=sys.stdin):
         Output:   {output}
         """), end="")
         return False
-    
+
     return True
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     passed = 0
     for test_case in test_cases:
         if test(*test_case):
