@@ -14,7 +14,7 @@ class EOF:
 
 
 def print_usage():
-    print(f"Usage: {sys.argv[0].split('/')[-1]} [file | -c prog] [-d]")
+    print(f"Usage: {sys.argv[0].split('/')[-1]} FILE [-d]")
 
 
 def debug(interpreter):
@@ -483,18 +483,14 @@ def main():
         print_usage()
         quit()
 
-    if "-c" in sys.argv:
-        code = sys.argv[sys.argv.index("-c") + 1]
-        Qualm(code).run()
-    else:
-        try:
-            with open(sys.argv[1], 'r') as f:
-                source = f.read()
-        except OSError as e:
-            print(e.strerror)
-            return 1
+    try:
+        with open(sys.argv[1], 'r') as f:
+            source = f.read()
+    except OSError as e:
+        print(e.strerror)
+        return 1
 
-        Qualm(source).run()
+    Qualm(source).run()
 
     return 0
 
