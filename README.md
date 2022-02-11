@@ -52,8 +52,10 @@ v<data>         put data in w
 ## Opening a file
 When the `&` instruction is issued, Qualm will open a file with the following parameters:
 
-    * `w`: filename
-    * `0`: the mode (0, 1, 2, 3 for r, w, r+, a respectively)
+* `w`: filename
+* `0`: the mode (0, 1, 2, 3 for r, w, r+, a respectively)
+
+If `w` is `__SOCKET`, it opens a TCP server-socket that will listen. The arguments are `host` and `port`.
 
 A file handle will be returned to `w`. This can be used for reading and writing.
 

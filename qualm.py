@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import socket
 from collections import defaultdict
 
 
@@ -11,6 +12,36 @@ WHITESPACE = " \t\n"
 
 class EOF:
     ...
+
+
+class QualmSocket:
+    def __init__(self, host, port):
+        print(f"{host = }\n{port = }")
+        self.host = host
+        self.port = port
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.bind((self.host, self.port))
+        self.s.listen(1)
+        self.conn, self.addr = None, None
+
+    def read(self):
+        if self.conn:
+            self.conn.close()
+
+        self.conn, self.addr = self.s.accept()
+        data = self.conn.recv(1024).decode('utf-8')
+        return data
+    
+    def write(self, data):
+        if not self.conn:
+            raise ConnectionError()
+
+        self.conn.send(data.encode())
+        self.conn.close()
+        self.conn = None
+
+    def flush(self):
+        ...
 
 
 def print_usage():
@@ -123,7 +154,9 @@ class Qualm:
                 file_handle.write("".join(output))
                 file_handle.flush()
             except AttributeError:
-                self.error("Cannot write to non-file handle.", sys.stderr)
+                self.error("Cannot write to non-file handle.", self.stderr)
+            except ConnectionError:
+                self.error("Problem writing to socket.", self.stderr)
         else:
             self.stdout.write(str(output))
 
@@ -140,7 +173,7 @@ class Qualm:
             try:
                 self.w = file_handle.read()
             except AttributeError:
-                self.error("Cannot read from non-file handle.", sys.stderr)
+                self.error("Cannot read from non-file handle.", self.stderr)
         else:
             self.w = self.stdin.readline().strip("\n")
 
@@ -293,12 +326,19 @@ class Qualm:
     def open_file(self):
         try:
             filename = self.w
-            mode = ["r", "w", "r+", "a"][int(self.slots[0])]
-            self.w = open(filename, mode)
+            if filename == "__SOCKET":
+                host = self.slots[0]
+                port = int(self.slots[1])
+                self.w = QualmSocket(host, port)
+            else:
+                mode = ["r", "w", "r+", "a"][int(self.slots[0])]
+                self.w = open(filename, mode)
+        except ValueError:
+            self.error(f"Invalid port number: {port}", self.stderr)
         except FileNotFoundError:
-            self.error(f"File `{filename}` does not exist.", sys.stderr)
+            self.error(f"File `{filename}` does not exist.", self.stderr)
         except (TypeError, IndexError):
-            self.error(f"Invalid mode: {self.slots[0]}", sys.stderr)
+            self.error(f"Invalid mode: {self.slots[0]}", self.stderr)
 
     def run(self):
         self._has_errored = False
