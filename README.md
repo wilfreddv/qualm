@@ -37,6 +37,8 @@ s<number>       swap <number> var with w
 v<data>         put data in w
 '...:           string data
 {<condition>{...} loop
+(...)             function definition
+~                 call a function
 <number>+<number> add
 <number>-<number> sub
 <number>*<number> mul
@@ -58,6 +60,11 @@ When the `&` instruction is issued, Qualm will open a file with the following pa
 If `w` is `__SOCKET`, it opens a TCP server-socket that will listen. The arguments are `host` and `port`.
 
 A file handle will be returned to `w`. This can be used for reading and writing.
+
+## Functions
+A function is defined using parentheses. After the definition, the pointer to the function will be stored in `w`.
+When a call `~` is issued, the pointer will be read from `w`.
+The return address is remembered automatically.
 
 ## Examples
 #### Hello world

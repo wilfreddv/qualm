@@ -104,6 +104,8 @@ class Qualm:
         self.slots = defaultdict(lambda: 0)
 
         self.loops = []
+        self.functions = []
+        self.call_stack = []  # (return address, loops)
 
         self._has_errored = False
 
@@ -129,6 +131,9 @@ class Qualm:
             "@": self.indexof,
             "$": self.getat,
             "&": self.open_file,
+            "(": self.func_open,
+            ")": self.func_close,
+            "~": self.func_call,
         }
 
     def print(self):
@@ -339,6 +344,30 @@ class Qualm:
             self.error(f"File `{filename}` does not exist.", self.stderr)
         except (TypeError, IndexError):
             self.error(f"Invalid mode: {self.slots[0]}", self.stderr)
+
+    def func_open(self):
+        self.functions.append(self.position)
+        
+        while self.peek() != ")": self.eat()
+        self.eat()
+        
+        self.w = self.functions[-1]
+
+    def func_close(self):
+        if len(self.call_stack) > 0:
+            self.position, self.loops = self.call_stack.pop()
+        else:
+            self.error(f"Cannot close unopened function at position: {self.position}", self.stderr)
+
+    def func_call(self):
+        if (not isinstance(self.w, (float, int)) and
+            int(self.w) not in self.functions):
+            self.error("Invalid function", self.stderr)
+        else:
+            fptr = int(self.w)
+            self.call_stack.append((self.position, self.loops))
+            self.loops = []
+            self.position = fptr
 
     def run(self):
         self._has_errored = False

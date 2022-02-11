@@ -51,6 +51,7 @@ test_cases = [
         ("v'Hello world:>!", "Expected slot (number 0-9), got `!`.\n"),
         ("    v'Hello World:    !", "Hello World"),
         ("v0{w=1{{w>=3{v'Hello world!\n:!}v1}", ""),
+        (" (<0!v'\n:!)>9v'Hello:>0<9~v'world!:>0<9~", "Hello\nworld!\n"),
 ]
 
 
