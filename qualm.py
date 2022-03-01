@@ -456,7 +456,10 @@ class Qualm:
         if ch == "w":
             ch = str(self.w)
 
-        if ch not in "0123456789":
+        if ch in "0123456789":
+            while self.peek() in "0123456789":
+                ch += self.eat()
+        else:
             self.error(f"Expected slot (number 0-9), got `{ch}`.", self.stderr)
             return -1
 
