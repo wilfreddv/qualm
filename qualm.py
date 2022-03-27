@@ -125,6 +125,7 @@ class Qualm:
             "%": self.mod,
             "w": self.get_w,
             "i": self.asint,
+            "f": self.asfloat,
             "c": self.aschr,
             "o": self.asord,
             "|": self.split,
@@ -142,7 +143,10 @@ class Qualm:
         next = self.peek()
         if next == "i":
             self.eat()
-            output = int(output)
+            output = int(float(output))
+        if next == "f":
+            self.eat()
+            output = float(output)
         elif next == "c":
             self.eat()
             output = chr(output)
@@ -283,7 +287,10 @@ class Qualm:
         return self.w
 
     def asint(self):
-        self.w = int(self.w)
+        self.w = int(float(self.w))
+    
+    def asfloat(self):
+        self.w = float(self.w)
 
     def aschr(self):
         self.w = chr(self.w)

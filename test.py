@@ -53,6 +53,10 @@ test_cases = [
         ("v0{w=1{{w>=3{v'Hello world!\n:!}v1}", ""),
         (" (<0!v'\n:!)>9v'Hello:>0<9~v'world!:>0<9~", "Hello\nworld!\n"),
         ("v1337>42v'Number at 42 is\: :!<42!i", "Number at 42 is: 1337"),
+        (".f!", "123.1", Input("123.1")),
+        (".i!", "123", Input("123")),
+        (".!f", "123.1", Input("123.1")),
+        (".!i", "123", Input("123")),
 ]
 
 
