@@ -313,12 +313,21 @@ class Qualm:
             self.w = self.w.split(delim)
 
     def indexof(self):
-        if self.peek() == "'":
+        if not hasattr(self.w, "index"):
+            self.error("self.w is not iterable", self.stderr)
+            
+        next = self.peek()
+
+        if next == "'":
             self.eat()
             item = self.string()
-        elif self.peek() in "0123456789":
+        elif next == "$":
+            self.eat()
+            self.w = len(self.w)
+            return
+        elif next in "0123456789":
             item = self.number()
-        elif self.peek() == "<":
+        elif next == "<":
             self.eat()
             item = self.slots[self.slot()]
         else:

@@ -18,6 +18,7 @@ $ python3 -m pip install --user .
 Data operations:
 |<delimiter>    split string on delimiter
 @               index of, e.g.: "'apples pears bananas:@'apples
+                The special character `$` will find EOL (strlen())
 $               indexing
 i               turn into integer
 c               turn into character (chr())
