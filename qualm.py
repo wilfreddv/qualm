@@ -130,7 +130,7 @@ class Qualm:
             "o": self.asord,
             "|": self.split,
             "@": self.indexof,
-            "$": self.getat,
+            "$": self.at,
             "&": self.open_file,
             "(": self.func_open,
             ")": self.func_close,
@@ -335,14 +335,32 @@ class Qualm:
 
         self.w = self.w.index(item)
 
-    def getat(self):
+    def at(self):
+        # Set at
+        if self.peek() == "=":
+            self.eat()
+            at = self.slot_or_number()
+            
+            if self.eat() != ",":
+                self.error(f"Expected `,` at {self.position}", self.stderr)
+
+            if self.peek() == "'":
+                self.eat()
+                value = self.string()
+            else:
+                value = self.slot_or_number()
+            self.w[at] = value
+        # Get at
+        else:
+            at = self.slot_or_number()
+            self.w = self.w[at]
+
+    def slot_or_number(self):
         if self.peek() == "<":
             self.eat()
-            at = int(self.slots[self.slot()])
+            return int(self.slots[self.slot()])
         else:
-            at = int(self.number())
-
-        self.w = self.w[at]
+            return int(self.number())
 
     def open_file(self):
         try:
