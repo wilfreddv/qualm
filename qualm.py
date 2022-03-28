@@ -31,7 +31,7 @@ class QualmSocket:
         self.conn, self.addr = self.s.accept()
         data = self.conn.recv(1024).decode('utf-8')
         return data
-    
+
     def write(self, data):
         if not self.conn:
             raise ConnectionError()
@@ -288,7 +288,7 @@ class Qualm:
 
     def asint(self):
         self.w = int(float(self.w))
-    
+
     def asfloat(self):
         self.w = float(self.w)
 
@@ -315,7 +315,7 @@ class Qualm:
     def indexof(self):
         if not hasattr(self.w, "index"):
             self.error("self.w is not iterable", self.stderr)
-            
+
         next = self.peek()
 
         if next == "'":
@@ -331,7 +331,10 @@ class Qualm:
             self.eat()
             item = self.slots[self.slot()]
         else:
-            self.error(f"Invalid item to get index of at position {self.position}.", self.stderr)
+            self.error(
+                f"Invalid item to get index of at position {self.position}.",
+                self.stderr
+                )
 
         self.w = self.w.index(item)
 
@@ -340,7 +343,7 @@ class Qualm:
         if self.peek() == "=":
             self.eat()
             at = self.slot_or_number()
-            
+
             if self.eat() != ",":
                 self.error(f"Expected `,` at {self.position}", self.stderr)
 
@@ -381,21 +384,24 @@ class Qualm:
 
     def func_open(self):
         self.functions.append(self.position)
-        
-        while self.peek() != ")": self.eat()
-        self.eat()
-        
+
+        while self.eat() != ")":
+            ...
+
         self.w = self.functions[-1]
 
     def func_close(self):
         if len(self.call_stack) > 0:
             self.position, self.loops = self.call_stack.pop()
         else:
-            self.error(f"Cannot close unopened function at position: {self.position}", self.stderr)
+            self.error(
+                f"Cannot close unopened function at position: {self.position}",
+                self.stderr
+                )
 
     def func_call(self):
         if (not isinstance(self.w, (float, int)) and
-            int(self.w) not in self.functions):
+                int(self.w) not in self.functions):
             self.error("Invalid function", self.stderr)
         else:
             fptr = int(self.w)
@@ -425,7 +431,8 @@ class Qualm:
                 # Ignore whitespace
                 pass
             else:
-                self.error(f"Got unexpected `{ch}` at {self.position}.", self.stderr)
+                self.error(f"Got unexpected `{ch}` at {self.position}.",
+                           self.stderr)
                 break
 
             self.position += 1
@@ -463,7 +470,8 @@ class Qualm:
             pass
         else:
             if self.eat() != "=":
-                self.error(f"Expected `=`, got {self.code[self.position-1]}", self.stderr)
+                self.error(f"Expected `=`, got {self.code[self.position-1]}",
+                           self.stderr)
             op += "="
 
         ch = self.peek()
@@ -540,7 +548,8 @@ class Qualm:
         has_decimal = False
         current = self.eat()
 
-        if current is EOF: return 0
+        if current is EOF:
+            return 0
 
         if current == "w":
             return self.w
@@ -559,7 +568,8 @@ class Qualm:
 
             if next == ".":
                 if has_decimal:
-                    self.error("Cannot have multiple decimal points.", self.stderr)
+                    self.error("Cannot have multiple decimal points.",
+                               self.stderr)
                     return -1
                 has_decimal = True
             elif not str(next) in "0123456789":
@@ -583,7 +593,8 @@ def main():
     global DEBUG
 
     DEBUG = "-d" in sys.argv
-    if DEBUG: sys.argv.remove("-d")
+    if DEBUG:
+        sys.argv.remove("-d")
 
     if len(sys.argv) < 2:
         print_usage()

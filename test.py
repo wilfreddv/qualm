@@ -1,4 +1,5 @@
-import sys, qualm
+import sys
+import qualm
 from textwrap import dedent
 
 
